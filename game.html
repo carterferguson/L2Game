@@ -8,11 +8,9 @@
     
     
 </style>
-    <script>
-    
-    
-    
-     var canvas, canvasContext;
+<script>
+        //START OF SCRIPT
+        var canvas, canvasContext;
 
         window.onload = function() {
             canvas = document.getElementById('gameCanvas');
@@ -26,7 +24,7 @@
     //mainloop start
      function mainloop(){
          
-         
+         colorRect(0, 0, canvas.width, canvas.height, 'black')
          
          
          
@@ -36,20 +34,20 @@
         
         
         //vars
-        var 
+        
         
         
         //vars end 
         
-        
+        //colour rect
         function colorRect(x, y, w, h, c) {
             canvasContext.fillStyle = c;
             canvasContext.fillRect(x, y, w, h);
 
-        }
+        }//end func
     
     
-    
+    //end script
     </script>
     
 
