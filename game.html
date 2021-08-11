@@ -1,7 +1,7 @@
 <!doctype html>
 
 <body>
- <canvas id="gameCanvas" width="800" height="600"></canvas>
+ <canvas id="gameCanvas" width="1024 " height="768 "></canvas>
 
 <style>
     
@@ -24,8 +24,8 @@
     //mainloop start
      function mainloop(){
          
-         colorRect(0, 0, canvas.width, canvas.height, 'black')
-         
+         colorRect(0, 0, canvas.width, canvas.height, 'black');
+         drawImg(background,0,0, canvas.width,canvas.height);
          
          
          
@@ -34,8 +34,11 @@
         
         
         //vars
-        
-        
+        var Health = 100;
+        var playerDamage = 10;
+        var playerAc = 20;
+        var background = new Image();
+        background.src = 'IMAGES/background.jpg';
         
         //vars end 
         
@@ -45,7 +48,10 @@
             canvasContext.fillRect(x, y, w, h);
 
         }//end func
-    
+        function drawImg(src, x, y, w, h) {
+            canvasContext.drawImage(src, x, y, w, h);
+
+        } //end func
     
     //end script
     </script>
