@@ -1,14 +1,25 @@
 <!doctype html>
 
 <body>
- <canvas id="gameCanvas" width="1024 " height="768 "></canvas>
+    <canvas id="gameCanvas" width="1366 " height="768 "></canvas>
 
-<style>
-    
-    
-    
-</style>
-<script>
+    <style>
+        html {
+            background-color: black;
+
+        }
+
+        canvas {
+            display: block;
+            margin: 10vh auto;
+
+
+        }
+
+        /* puts Game canvas in center*/
+
+    </style>
+    <script>
         //START OF SCRIPT
         var canvas, canvasContext;
 
@@ -16,46 +27,114 @@
             canvas = document.getElementById('gameCanvas');
             canvasContext = canvas.getContext('2d');
 
+            //            document.addEventListener('keydown', keypressed);
+            //            document.addEventListener('keyup', keyreleased);
+
             setInterval(mainloop, 1000 / 50);
-            document.addEventListener('keydown', keypressed);
-            document.addEventListener('keyup', keyreleased);
 
         }
-    //mainloop start
-     function mainloop(){
-         
-         colorRect(0, 0, canvas.width, canvas.height, 'black');
-         drawImg(background,0,0, canvas.width,canvas.height);
-         
-         
-         
-     }// mainloop end
-        
-        
-        
+
+        var settingUp = true;
+
+        //mainloop start
+        function mainloop() {
+            drawImg(background, 0, 0, canvas.width, canvas.height); //background image 
+
+            if (weapontype == 1) {
+                drawImg(weapon1, playerX, playerY, playerXSize, playerYSize); //first gun
+            }
+
+
+            if (weapontype == 2) {
+                drawImg(weapon2, playerX, playerY, playerXSize, playerYSize); //second gun
+            }
+            
+            if (weapontype == 3) {
+                drawImg(weapon3, playerX, playerY, playerXSize, playerYSize); //third gun
+            }
+            
+            if (weapontype == 4) {
+                drawImg(weapon4, playerX, playerY, playerXSize, playerYSize); //forth gun
+            }
+
+
+            if (settingUp) {
+                playerX = (canvas.width * 1 / 2) - (1 / 2 * playerXSize);
+                playerY = (canvas.height * 4 / 5) - (1 / 2 * playerYSize);
+            }
+
+
+        }
+        // mainloop end
+
+
+
         //vars
         var Health = 100;
         var playerDamage = 10;
         var playerAc = 20;
+        var playerXSize = 200;
+        var playerYSize = 200;
+        var weapontype = 2;
+
         var background = new Image();
         background.src = 'IMAGES/background.jpg';
-        
+
+        var weapon1 = new Image();
+        weapon1.src = 'PLAYER/Sniper.png';
+
+        var weapon2 = new Image();
+        weapon2.src = 'PLAYER/ak.png';
+
+        var weapon3 = new Image();
+        weapon3.src = 'PLAYER/sightedgun1.png';
+
+        var weapon4 = new Image();
+        weapon4.src = 'PLAYER/rifleesk.png';
+
+        var playerX = 0;
+        var playerY = 0;
+
         //vars end 
-        
-        //colour rect
+
+        //colour rect and drawimg funcs
         function colorRect(x, y, w, h, c) {
             canvasContext.fillStyle = c;
             canvasContext.fillRect(x, y, w, h);
 
-        }//end func
+        } //end func
+
         function drawImg(src, x, y, w, h) {
             canvasContext.drawImage(src, x, y, w, h);
 
         } //end func
-    
-    //end script
+
+
+
+
+
+
+        function weaponSelection() {
+            //            if(){
+            //               
+            //               
+            //               }
+            //            
+
+        }
+
+
+
+
+
+
+
+
+
+        //end script
+
     </script>
-    
+
 
 
 
