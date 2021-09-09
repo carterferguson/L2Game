@@ -41,26 +41,26 @@
             drawImg(background, 0, 0, canvas.width, canvas.height); //background image 
 
             if (weapontype == 1) {
-                drawImg(weapon1, playerX, playerY, playerXSize, playerYSize); //first gun
+                drawImg(weapon1, playerX, playerY, playerXSize, playerYSize); //sniper 
             }
 
 
             if (weapontype == 2) {
-                drawImg(weapon2, playerX, playerY, playerXSize, playerYSize); //second gun
+                drawImg(weapon2, playerX, playerY, playerXSize, playerYSize); //ak 
             }
-            
+
             if (weapontype == 3) {
-                drawImg(weapon3, playerX, playerY, playerXSize, playerYSize); //third gun
+                drawImg(weapon3, playerX, playerY, playerXSize, playerYSize); //smg with sight 
             }
-            
+
             if (weapontype == 4) {
-                drawImg(weapon4, playerX, playerY, playerXSize, playerYSize); //forth gun
+                drawImg(weapon4, playerX, playerY, playerXSize, playerYSize); //rifle 
             }
 
 
             if (settingUp) {
                 playerX = (canvas.width * 1 / 2) - (1 / 2 * playerXSize);
-                playerY = (canvas.height * 4 / 5) - (1 / 2 * playerYSize);
+                playerY = (canvas.height - playerYSize);
             }
 
 
@@ -75,7 +75,7 @@
         var playerAc = 20;
         var playerXSize = 200;
         var playerYSize = 200;
-        var weapontype = 2;
+        var weapontype = 4;
 
         var background = new Image();
         background.src = 'IMAGES/background.jpg';
@@ -94,6 +94,13 @@
 
         var playerX = 0;
         var playerY = 0;
+
+        var score = 0;
+
+        var EnemyCount = 0;
+        var Wave = 1;
+        var NewWave = true;
+
 
         //vars end 
 
@@ -115,16 +122,25 @@
 
 
         function weaponSelection() {
-            //            if(){
-            //               
-            //               
-            //               }
-            //            
+            if (score = 25) {
+
+
+            }
+
 
         }
 
 
+        function WaveControl() {
+            if (EnemyCount < 1) {
+                Wave = Wave + 1;
+            }
+          if (wave > 0 && wave < 5 && NewWave) {
+                    EnemyCount = Wave * 2 + 3;
+                    NewWave = false;
+          }
 
+        }
 
 
 
