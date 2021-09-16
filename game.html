@@ -101,7 +101,10 @@
         var Wave = 1;
         var NewWave = true;
 
-
+        var Dwidth = 32;
+        var Dheight = 57;
+        var Swidth = 32;
+        var Sheight = 57;
         //vars end 
 
         //colour rect and drawimg funcs
@@ -135,15 +138,21 @@
             if (EnemyCount < 1) {
                 Wave = Wave + 1;
             }
-          if (wave > 0 && wave < 5 && NewWave) {
-                    EnemyCount = Wave * 2 + 3;
-                    NewWave = false;
-          }
+            if (wave > 0 && wave < 5 && NewWave) {
+                EnemyCount = Wave * 2 + 3;
+                NewWave = false;
+            }
 
         }
 
 
 
+        function drawImage(src, sx, sy, sw, sh, dx, dy, dw, dh) {
+            canvasContext.drawImage(src, sx, sy, sw, sh, dx, dy, dw, dh)
+
+
+
+        }
 
 
 
