@@ -1,0 +1,627 @@
+<!doctype html>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <style>
+        html {
+            background-color: black;
+
+        }
+
+        canvas {
+            display: block;
+            margin: 20vh auto;
+            /* puts Game canvas in center*/
+
+
+        }
+
+    </style>
+    <audio id='sound'>
+        <source src="music/BGMUSIC.mp3"><!-- Background Music -->
+    </audio>
+
+    <audio id='shootsound'>
+        <source src="music/shooting.mp3"> <!-- Effect that plays when an enemy is destroyed, sometimes at least -->
+
+    </audio>
+
+    <audio id='HighWayToHell'>
+        <source src="music/HighWayToHell.mp3">
+    </audio>
+
+    <audio id='Merica'>
+        <source src="music/'Merica.mp3">
+    </audio>
+
+    <audio id='Ihatetosayit'>
+        <source src="music/Ihatetosayit.mp3">
+    </audio>
+
+    <audio id='BACKUP'>
+        <source src="music/rick.mp3">
+    </audio>
+    <!-- If you get sick of getting rick rolled switch it to the MUSIC mp3 instead of rick for the more approriate song-->
+
+
+    <script>
+        //START OF SCRIPT
+        var canvas, canvasContext;
+
+        window.onload = function() {
+            canvas = document.getElementById('gameCanvas');
+            canvasContext = canvas.getContext('2d');
+
+            setInterval(mainloop, 1000 / 50);
+            document.addEventListener('keydown', keypressed);
+            document.addEventListener('keyup', keyreleased);
+
+        }
+
+
+        var NewGame = 'insert string';
+
+
+        var UserName = ''
+
+        while (UserName == '' || UserName == null) {
+            UserName = prompt('Enter a Username');
+        }
+
+
+
+
+
+        // main loop 
+        function mainloop() {
+
+            if (Gamerun == 2) {
+                one = false;
+                two = false;
+                three = false;
+                four = false;
+                backup = false;
+
+                BACKUP_SONG.play();
+                colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
+                colortext(UserName + ' You Have failed GAMEOVER Score = ' + KillScore, WordXPos, WordYPos, '30px Arial', 'crimson')
+
+            }
+            if (Gamerun == 1) {
+
+
+                drawImg(background, imgXpos, imgYpos, imgW, imgH) //background
+                colorRect(Xpos, Ypos, LINE_SIZE, LINE_SIZE, 'orange') // bullet
+                drawImg(player, playerXpos, playerYpos, playerSize, playerSize) //player ship
+                cooldownFunc();
+                playerMove();
+
+                if (settingUp) { // initial spwaning
+                    for (var i = 0; i < totalEnemies; i++) {
+                        SpawnEnemies();
+                    }
+
+
+                    settingUp = false;
+
+                }
+
+
+                drawEnemies();
+                if (shoot) {
+                    shooting();
+
+
+                }
+                EnemyMove();
+                Killing();
+                colortext(UserName + ' score =' + KillScore, 10, 20, '30px Arial', 'green')
+            }
+            MyMusic();
+
+        }
+        //end main func
+
+
+
+        //vars
+        //background vars
+        var imgXpos = 0;
+        var imgYpos = 0;
+        var imgW = 800;
+        var imgH = 600;
+        var dif = true;
+        var WordXPos = 50;
+        var WordYPos = 900 / 2;
+
+
+
+        //player vars
+
+        var playerSize = 40;
+        var playerXpos = 0;
+        var playerYpos = 900 / 2;
+        var playerXspeed = 10;
+        var playerYspeed = 10;
+        //enemy vars
+
+        var BadShips = [];
+        //key vars
+
+        const WKEY = 87;
+        const SKEY = 83;
+        const DKEY = 68;
+        const AKEY = 65;
+        const SHOOTKEY = 32;
+        var w = false;
+        var s = false;
+        var d = false;
+        var a = false;
+        var shoot = false;
+        //shooting vars
+
+        const LINE_SIZE = 7;
+        var Xpos = -20;
+        var Ypos = -20;
+        var YSpeed = 25;
+        var hit = false;
+        var cooldown = false;
+        var Kill = false;
+        var KillScore = 0;
+        //difficulty and name vars
+        var dificulty = ''
+        while (dificulty == '' || dificulty == null) {
+
+            dificulty = prompt('What difficulty do you want? easy, medium or hard', 'medium')
+
+        }
+
+
+
+
+
+        var Gamerun = 1;
+
+
+
+
+        var totalEnemies = 10;
+        var settingUp = true;
+        var totalEnemies = 10;
+        var MinEnemies = 8;
+        // end vars
+
+        // image vars
+
+        var background = new Image();
+        background.src = 'images/background.jpg';
+
+        var player = new Image();
+        player.src = 'sprites/player1.png'; //normal sprite
+
+        var Enemy = new Image();
+        Enemy.src = 'sprites/enemy.png';
+
+        var Firing = new Image();
+        Firing.src = 'sprites/player2.png'; //shooting sprite
+        //end image vars
+
+
+
+        function colorRect(x, y, w, h, c) {
+            canvasContext.fillStyle = c;
+            canvasContext.fillRect(x, y, w, h);
+
+        } //end func
+
+
+
+        function drawImg(src, x, y, w, h) {
+            canvasContext.drawImage(src, x, y, w, h);
+
+        } //end func
+
+
+        function drawEnemies() { //draws enemy sprites
+            BadShips.forEach(function(ship, i, array) {
+                drawImg(Enemy, ship.EnemyXpos, ship.EnemyYpos, ship.EnemySize, ship.EnemySize)
+            });
+
+
+
+        } //end func
+
+
+
+
+
+
+
+        function EnemyMove() {
+            BadShips.forEach(function(BadShips, i, array) {
+                BadShips.EnemyYpos = BadShips.EnemyYpos + BadShips.EnemyYSpeed
+                if (BadShips.EnemyYpos > canvas.height) {
+                    BadShips.EnemyYpos = BadShips.EnemySize;
+                    BadShips.EnemyXpos = Math.floor(Math.random() * (canvas.width - BadShips.EnemySize));
+                    if (dificulty == 'easy') {
+
+                        BadShips.EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
+                    }
+                    if (dificulty == 'medium') {
+
+                        BadShips.EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
+                    }
+                    if (dificulty == 'hard') {
+
+                        BadShips.EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
+                    }
+
+                }
+
+                if (playerXpos + playerSize > BadShips.EnemyXpos && playerXpos < BadShips.EnemyXpos + BadShips.EnemySize && playerYpos + playerSize > BadShips.EnemyYpos && playerYpos < BadShips.EnemyYpos + BadShips.EnemySize) {
+
+
+
+                    BadShips.EnemyYpos = playerYpos;
+                    BadShips.EnemyXpos = playerXpos;
+
+                    Gamerun = 2;
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+            }); // foreach loop END
+
+
+        } //end func
+
+
+
+
+
+
+        //ARRAY FOR ENEMIES
+
+
+        function SpawnEnemies() {
+
+            var EnemySize = 40;
+            var EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
+            var EnemyYpos = 10;
+            var EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
+            // backup easy difficulty
+
+
+
+            if (dificulty == 'easy') {
+                EnemySize = 40;
+                EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
+                EnemyYpos = 10;
+                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
+                if (EnemyYpos > canvas.height) {
+                    EnemyYpos = 10;
+                }
+
+            }
+            if (dificulty == 'medium') {
+                EnemySize = 35;
+                EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
+                EnemyYpos = 10;
+                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
+                if (EnemyYpos > canvas.height) {
+                    EnemyYpos = 10;
+                }
+            }
+            if (dificulty == 'hard') {
+                EnemySize = 30;
+                EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
+                EnemyYpos = 10;
+                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
+
+            }
+
+
+
+            var enemy = {
+                EnemyXpos: EnemyXpos,
+                EnemyYpos: EnemyYpos,
+                EnemySize: EnemySize,
+                EnemyYSpeed: EnemyYSpeed
+            }
+
+            BadShips.push(enemy); // creates an enemy i
+
+        } //end of array
+
+
+
+
+
+
+
+
+
+        //SHOOTING FUNC
+
+        function shooting() {
+            if (shoot && cooldown) {
+                Xpos = playerXpos + (playerSize / 2);
+                Ypos = playerYpos;
+
+                shoot = false;
+                hit = true;
+            }
+
+            if (hit) {
+
+                Ypos -= YSpeed
+                hit = false;
+                cooldown = false;
+            } //end func
+
+
+
+
+
+        } //end func
+        //moving funcs
+
+        function cooldownFunc() {
+            if (Ypos < 0)
+                cooldown = true;
+        }
+
+        function playerMove() {
+            if (Xpos > 0) {
+                Ypos = Ypos - YSpeed
+
+            } //bullet move
+
+            if (d && playerXpos < canvas.width - playerSize) {
+                playerXpos += playerXspeed;
+            } // right move
+
+            if (a && playerXpos > 0) {
+                playerXpos -= playerXspeed;
+            } // left move
+
+            if (w && playerYpos > 0) {
+                playerYpos -= playerYspeed;
+            } //up move
+
+            if (s && playerYpos < canvas.height - playerSize) {
+                playerYpos += playerYspeed;
+            } //down move
+
+
+
+
+        } //end func
+
+
+
+
+
+        //KEYPRESS/RELEASE
+
+
+
+
+
+
+        function keypressed(evt) {
+            if (evt.keyCode == AKEY) { //left
+                a = true;
+
+            }
+            if (evt.keyCode == DKEY) { //right
+                d = true;
+
+            }
+            if (evt.keyCode == WKEY) { //up
+                w = true;
+
+            }
+            if (evt.keyCode == SKEY) { //down
+                s = true;
+
+            }
+            if (evt.keyCode == SHOOTKEY) { //shoot
+                shoot = true;
+                shooting();
+                drawImg(Firing, playerXpos, playerYpos, playerSize, playerSize); //changes 'sprite' to one with a fire ball behind it
+                SHOOTSOUND.play();
+            }
+
+
+        } //end func
+
+
+
+
+        function keyreleased(evt) {
+
+            if (evt.keyCode == AKEY) { //left
+                a = false;
+            }
+            if (evt.keyCode == DKEY) { //right
+                d = false;
+
+            }
+            if (evt.keyCode == WKEY) { //up
+                w = false;
+
+            }
+            if (evt.keyCode == SKEY) { //down
+                s = false;
+
+            }
+            if (evt.keyCode == SHOOTKEY) { //shoot
+                shoot = false;
+            }
+        } //end func
+
+
+
+
+
+
+
+
+
+        function colortext(msg, x, y, f, c) {
+            canvasContext.fillStyle = c;
+            canvasContext.font = f;
+            canvasContext.fillText(msg, x, y);
+        } // text drawing
+
+
+
+
+
+
+
+
+
+        //bullet and enemy collison 
+
+
+
+
+        function Killing() {
+            BadShips.forEach(function(ships, i, array) {
+
+                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'easy') {
+                    KillScore = KillScore + 1;
+                    ships.EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
+                    ships.EnemyYpos = 10;
+                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+                    shootsound.play();
+                } //Enemy 'respawn' after being killed
+
+
+
+                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'medium') {
+                    KillScore = KillScore + 1;
+                    ships.EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
+                    ships.EnemyYpos = 10;
+                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+                    shootsound.play();
+                } //Enemy 'respawn' after being killed
+
+
+
+                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'hard') {
+                    KillScore = KillScore + 1;
+                    s.EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
+                    ships.EnemyYpos = 10;
+                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+
+                } //Enemy 'respawn' after being killed/ they move back to top with new speed and random X pos
+
+
+
+
+
+
+
+
+
+            })
+        };
+        // end func
+
+
+
+        //music stuff
+        var Music;
+        const MYSOUND = document.getElementById("sound");
+        const SHOOTSOUND = document.getElementById("shootsound");
+        const HIGHWAYTOHELL = document.getElementById("HighWayToHell");
+        const MERICA = document.getElementById("Merica");
+        const IHATETOSAYIT = document.getElementById("Ihatetosayit");
+        const BACKUP_SONG = document.getElementById("BACKUP");
+        var one = false;
+        var two = false;
+        var three = false;
+        var four = false;
+        var song = prompt('pick a song, one two three or four', 'one');
+        var backup = false;
+
+
+
+
+        ;
+
+
+        //music funcs
+
+        function MyMusic() {
+            if (song == 'one') {
+                one = true; //8bit sound
+            }
+            if (song == 'two') {
+                two = true; //HIGHWAYTOHELL
+
+            }
+            if (song == 'three') {
+                three = true; //IHATETOSAYIT
+            }
+
+            if (song == 'four') {
+                four = true; //MERICA
+
+            }
+            if (one == false && two == false && three == false && four == false) {
+                backup = true;
+
+            }
+
+            if (one) {
+
+                MYSOUND.play(); //song one
+
+
+            }
+            if (two) {
+
+                HIGHWAYTOHELL.play(); //song two
+
+
+            }
+            if (three) {
+                IHATETOSAYIT.play(); //song three
+
+
+            }
+            if (four) {
+
+                MERICA.play(); //song four
+
+
+            }
+            if (backup) {
+
+                BACKUP_SONG.play(); //BACKUP RICK ROLL
+
+            }
+            //end music
+
+        }
+
+
+
+        //END SCRIPT  
+
+    </script>
+
+</body>
