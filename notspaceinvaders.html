@@ -82,9 +82,13 @@
                 four = false;
                 backup = false;
 
+                drawImg(deathScreen, imgXpos, imgYpos, imgW, imgH)
+                colortext(UserName + ' Score ' + KillScore, WordXPos, WordYPos, '30px Arial', 'crimson')
+                MYSOUND.pause();
+                IHATETOSAYIT.pause();
+                HIGHWAYTOHELL.pause();
+                MERICA.pause();
                 BACKUP_SONG.play();
-                colorRect(0, 0, canvas.width, canvas.height, 'black'); // bg
-                colortext(UserName + ' You Have failed GAMEOVER Score = ' + KillScore, WordXPos, WordYPos, '30px Arial', 'crimson')
 
             }
             if (Gamerun == 1) {
@@ -152,11 +156,15 @@
         const SKEY = 83;
         const DKEY = 68;
         const AKEY = 65;
+        const SHIFTKEY = 16;
+
         const SHOOTKEY = 32;
         var w = false;
         var s = false;
         var d = false;
         var a = false;
+        var c = false;
+
         var shoot = false;
         //shooting vars
 
@@ -192,6 +200,8 @@
         // end vars
 
         // image vars
+        var deathScreen = new Image();
+        deathScreen.src = 'images/deathScreen.jpg';
 
         var background = new Image();
         background.src = 'images/background.jpg';
@@ -435,11 +445,17 @@
                 s = true;
 
             }
+            if (evt.keyCode == SHIFTKEY) { //down
+                c = true;
+                colorRect(playerXpos, (playerYpos -10 ), 40,20, 'blue');
+            }
             if (evt.keyCode == SHOOTKEY) { //shoot
                 shoot = true;
                 shooting();
                 drawImg(Firing, playerXpos, playerYpos, playerSize, playerSize); //changes 'sprite' to one with a fire ball behind it
                 SHOOTSOUND.play();
+
+
             }
 
 
@@ -465,9 +481,15 @@
                 s = false;
 
             }
+            if (evt.keyCode == SHIFTKEY) { //down
+                c = false;
+
+            }
             if (evt.keyCode == SHOOTKEY) { //shoot
                 shoot = false;
+                SHOOTSOUND.currentTime = 0;
             }
+
         } //end func
 
 
@@ -554,69 +576,72 @@
         var two = false;
         var three = false;
         var four = false;
-        var song = prompt('pick a song, one two three or four', 'one');
         var backup = false;
+        var song = prompt('pick a song, one two three or four', 'one');
 
 
 
 
-        ;
+
 
 
         //music funcs
 
         function MyMusic() {
-            if (song == 'one') {
-                one = true; //8bit sound
-            }
-            if (song == 'two') {
-                two = true; //HIGHWAYTOHELL
+            if (Gamerun == 1) {
 
-            }
-            if (song == 'three') {
-                three = true; //IHATETOSAYIT
-            }
+                if (song == 'one') {
+                    one = true; //8bit sound
+                }
+                if (song == 'two') {
+                    two = true; //HIGHWAYTOHELL
 
-            if (song == 'four') {
-                four = true; //MERICA
+                }
+                if (song == 'three') {
+                    three = true; //IHATETOSAYIT
+                }
 
-            }
-            if (one == false && two == false && three == false && four == false) {
-                backup = true;
+                if (song == 'four') {
+                    four = true; //MERICA
 
-            }
+                }
+                if (one == false && two == false && three == false && four == false) {
+                    backup = true;
 
-            if (one) {
+                }
 
-                MYSOUND.play(); //song one
+                if (one) {
 
-
-            }
-            if (two) {
-
-                HIGHWAYTOHELL.play(); //song two
+                    MYSOUND.play(); //song one
 
 
-            }
-            if (three) {
-                IHATETOSAYIT.play(); //song three
+                }
+                if (two) {
+
+                    HIGHWAYTOHELL.play(); //song two
 
 
-            }
-            if (four) {
+                }
+                if (three) {
+                    IHATETOSAYIT.play(); //song three
 
-                MERICA.play(); //song four
+                }
+                if (four) {
+
+                    MERICA.play(); //song four
 
 
-            }
-            if (backup) {
+                }
+                if (backup) {
 
-                BACKUP_SONG.play(); //BACKUP RICK ROLL
+                    BACKUP_SONG.play(); //BACKUP RICK ROLL
 
-            }
-            //end music
+                } //end music
 
-        }
+            } //main if end
+
+
+        } //end func
 
 
 
