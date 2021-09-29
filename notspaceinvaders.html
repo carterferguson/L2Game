@@ -99,7 +99,7 @@
                 drawImg(player, playerXpos, playerYpos, playerSize, playerSize) //player ship
                 cooldownFunc();
                 playerMove();
-
+                SuperShoot();
                 if (settingUp) { // initial spwaning
                     for (var i = 0; i < totalEnemies; i++) {
                         SpawnEnemies();
@@ -125,7 +125,6 @@
 
         }
         //end main func
-
 
 
         //vars
@@ -156,18 +155,18 @@
         const SKEY = 83;
         const DKEY = 68;
         const AKEY = 65;
-        const SHIFTKEY = 16;
+        const QKEY = 81;
 
         const SHOOTKEY = 32;
         var w = false;
         var s = false;
         var d = false;
         var a = false;
-        var c = false;
+        var q = false;
 
         var shoot = false;
         //shooting vars
-
+        const SSSIZE = 15;
         const LINE_SIZE = 7;
         var Xpos = -20;
         var Ypos = -20;
@@ -176,6 +175,9 @@
         var cooldown = false;
         var Kill = false;
         var KillScore = 0;
+        var SSXpos = 100;
+        var SSYpos = 100;
+
         //difficulty and name vars
         var dificulty = ''
         while (dificulty == '' || dificulty == null) {
@@ -445,9 +447,9 @@
                 s = true;
 
             }
-            if (evt.keyCode == SHIFTKEY) { //down
-                c = true;
-                colorRect(playerXpos, (playerYpos -10 ), 40,20, 'blue');
+            if (evt.keyCode == QKEY) { //down
+                q = true;
+
             }
             if (evt.keyCode == SHOOTKEY) { //shoot
                 shoot = true;
@@ -481,8 +483,8 @@
                 s = false;
 
             }
-            if (evt.keyCode == SHIFTKEY) { //down
-                c = false;
+            if (evt.keyCode == QKEY) { //down
+                q = false;
 
             }
             if (evt.keyCode == SHOOTKEY) { //shoot
@@ -492,9 +494,29 @@
 
         } //end func
 
+        var CS = false;
+        var Ammo = 3;
+        var NukeFire = false;
 
+        function SuperShoot() {
+            if (q) {
 
+                CS = true
+            }
+            if (CS && Ammo > 0) {
+                SSXpos = playerXpos - (playerSize / 2);
+                SSYpos = playerYpos - (playerSize / 2);
+                NukeFire = true
+            }
+            if (NukeFire && SSXpos < canvas.width && SSXpos > 0 && SSYpos > 0) {
+                CS = false;
+                colorRect(SSXpos, SSYpos, SSSIZE, SSSIZE, 'red')
+                SSXpos = playerXpos - (playerSize / 2);;
+                SSYpos = playerYpos / +YSpeed;
+                Ammo = Ammo - 1;
+            }
 
+        }
 
 
 
