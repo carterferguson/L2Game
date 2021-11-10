@@ -120,7 +120,7 @@
                 EnemyMove();
                 Killing();
                 colortext(UserName + ' score =' + KillScore, 10, 20, '30px Arial', 'green')
-                colortext('You have ' + Ammo +' nukes left' , 10, 50, '30px Arial', 'green')
+                colortext('You have ' + Ammo + ' nukes left', 10, 50, '30px Arial', 'green')
             }
             MyMusic();
 
@@ -189,7 +189,25 @@
 
         }
 
+        var maxSpeed = 0;
+        var minSpeed = 0;
+        var EnemySize = 0;
 
+        if (dificulty == 'easy') {
+            maxSpeed = 5;
+            minSpeed = 3;
+            EnemySize = 40;
+        }
+        if (dificulty == 'medium') {
+            maxSpeed = 8;
+            minSpeed = 5;
+            EnemySize = 35;
+        }
+        if (dificulty == 'hard') {
+            maxSpeed = 12;
+            minSpeed = 8;
+            EnemySize = 30;
+        }
 
 
 
@@ -258,18 +276,10 @@
                 if (BadShips.EnemyYpos > canvas.height) {
                     BadShips.EnemyYpos = BadShips.EnemySize;
                     BadShips.EnemyXpos = Math.floor(Math.random() * (canvas.width - BadShips.EnemySize));
-                    if (dificulty == 'easy') {
 
-                        BadShips.EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
-                    }
-                    if (dificulty == 'medium') {
 
-                        BadShips.EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
-                    }
-                    if (dificulty == 'hard') {
+                    BadShips.EnemyYSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed)) + minSpeed;
 
-                        BadShips.EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
-                    }
 
                 }
 
@@ -309,42 +319,11 @@
 
         function SpawnEnemies() {
 
-            var EnemySize = 40;
+
             var EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
             var EnemyYpos = 10;
             var EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
             // backup easy difficulty
-
-
-
-            if (dificulty == 'easy') {
-                EnemySize = 40;
-                EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
-                EnemyYpos = 10;
-                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
-                if (EnemyYpos > canvas.height) {
-                    EnemyYpos = 10;
-                }
-
-            }
-            if (dificulty == 'medium') {
-                EnemySize = 35;
-                EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
-                EnemyYpos = 10;
-                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
-                if (EnemyYpos > canvas.height) {
-                    EnemyYpos = 10;
-                }
-            }
-            if (dificulty == 'hard') {
-                EnemySize = 30;
-                EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
-                EnemyYpos = 10;
-                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
-
-            }
-
-
 
             var enemy = {
                 EnemyXpos: EnemyXpos,
@@ -360,7 +339,7 @@
 
         var bulletColor = 'orange';
         var shotType = false;
-
+        var NukeHit = false;
         //SHOOTING FUNC
 
         function shooting() {
@@ -544,6 +523,8 @@
                         ships.EnemyYpos = 10;
                         ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
                         shootsound.play();
+
+
                     } //Enemy 'respawn' after being killed
 
 
@@ -555,6 +536,7 @@
                         ships.EnemyYpos = 10;
                         ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
                         shootsound.play();
+
                     }
 
 
@@ -569,15 +551,26 @@
                     }
 
                 } //Enemy 'respawn' after being killed/ they move back to top with new speed and random X pos
-
-
-
-
-
-
-
-
             )
+
+
+
+            if (NukeHit) {
+                console.log('nuked')
+                Badships.EnemyYpos = 0;
+                KillScore = KillScore + 9;
+
+                EnemyYSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed)) + minSpeed;
+                EnemyYpos = 10;
+                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
+                if (EnemyYpos > canvas.height) {
+                    EnemyYpos = 10;
+                }
+            }
+
+
+
+
         };
         // end func
 
