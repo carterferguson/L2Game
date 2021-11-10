@@ -517,56 +517,40 @@
         function Killing() {
             BadShips.forEach(function(ships, i, array) {
 
-                    if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'easy') {
-                        KillScore = KillScore + 1;
-                        ships.EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
-                        ships.EnemyYpos = 10;
-                        ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
-                        shootsound.play();
-
-
-                    } //Enemy 'respawn' after being killed
-
-
-
-                    if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'medium') {
-
-                        KillScore = KillScore + 1;
-                        ships.EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
-                        ships.EnemyYpos = 10;
-                        ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
-                        shootsound.play();
-
+                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize) {
+                    KillScore = KillScore + 1;
+                    ships.EnemyYSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed)) + minSpeed;
+                    ships.EnemyYpos = 10;
+                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+                    shootsound.play();
+                    if (bulletColor == 'green') {
+                        NukeHit = true;
                     }
+                } //Enemy 'respawn' after being killed
 
 
 
-                    if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'hard') {
-                        KillScore = KillScore + 1;
-                        s.EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
-                        ships.EnemyYpos = 10;
-                        ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
 
-
-                    }
-
-                } //Enemy 'respawn' after being killed/ they move back to top with new speed and random X pos
-            )
-
-
+            }); //Enemy 'respawn' after being killed/ they move back to top with new speed and random X pos
 
             if (NukeHit) {
-                console.log('nuked')
-                Badships.EnemyYpos = 0;
-                KillScore = KillScore + 9;
+                        
+                for(var i = 0; i < BadShips.length; i++){
+                    
+                    BadShips[i].EnemyYpos = 0;
+                    
+                    KillScore++;
 
-                EnemyYSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed)) + minSpeed;
-                EnemyYpos = 10;
-                EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
-                if (EnemyYpos > canvas.height) {
-                    EnemyYpos = 10;
+                    BadShips[i].EnemyYSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed)) + minSpeed;
+                    BadShips[i].EnemyYpos = 0 - canvas.height/2;
+                    BadShips[i].EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize)); 
                 }
-            }
+                NukeHit = false;
+            }// kills all enemies
+
+
+
+
 
 
 
