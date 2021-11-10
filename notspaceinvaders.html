@@ -95,11 +95,11 @@
 
 
                 drawImg(background, imgXpos, imgYpos, imgW, imgH) //background
-                colorRect(Xpos, Ypos, LINE_SIZE, LINE_SIZE, 'orange') // bullet
+                colorRect(Xpos, Ypos, LINE_SIZE, LINE_SIZE, bulletColor) // bullet
                 drawImg(player, playerXpos, playerYpos, playerSize, playerSize) //player ship
                 cooldownFunc();
                 playerMove();
-
+                colorRect(SSXpos, SSYpos, SSSIZE, SSSIZE, 'red')
                 if (settingUp) { // initial spwaning
                     for (var i = 0; i < totalEnemies; i++) {
                         SpawnEnemies();
@@ -120,12 +120,12 @@
                 EnemyMove();
                 Killing();
                 colortext(UserName + ' score =' + KillScore, 10, 20, '30px Arial', 'green')
+                colortext('You have ' + Ammo +' nukes left' , 10, 50, '30px Arial', 'green')
             }
             MyMusic();
 
         }
         //end main func
-
 
 
         //vars
@@ -156,14 +156,18 @@
         const SKEY = 83;
         const DKEY = 68;
         const AKEY = 65;
+        const QKEY = 81;
+
         const SHOOTKEY = 32;
         var w = false;
         var s = false;
         var d = false;
         var a = false;
+        var q = false;
+
         var shoot = false;
         //shooting vars
-
+        const SSSIZE = 15;
         const LINE_SIZE = 7;
         var Xpos = -20;
         var Ypos = -20;
@@ -172,6 +176,11 @@
         var cooldown = false;
         var Kill = false;
         var KillScore = 0;
+        var SSXpos = -100;
+        var SSYpos = -100;
+        var CS = false;
+        var Ammo = 3;
+        var NukeFire = false;
         //difficulty and name vars
         var dificulty = ''
         while (dificulty == '' || dificulty == null) {
@@ -349,21 +358,29 @@
         } //end of array
 
 
-
-
-
-
-
-
+        var bulletColor = 'orange';
+        var shotType = false;
 
         //SHOOTING FUNC
 
         function shooting() {
             if (shoot && cooldown) {
+                YSpeed = 25;
+                bulletColor = 'orange';
                 Xpos = playerXpos + (playerSize / 2);
                 Ypos = playerYpos;
-
+                shotType = false;
                 shoot = false;
+                hit = true;
+            }
+
+            if (q && Ammo > 0) {
+                YSpeed = 10;
+                bulletColor = 'green';
+                Xpos = playerXpos + (playerSize / 2);
+                Ypos = playerYpos;
+                Ammo = Ammo - 1;
+                shotType = true;
                 hit = true;
             }
 
@@ -441,8 +458,16 @@
                 s = true;
 
             }
+            if (evt.keyCode == QKEY) { //down
+                q = true;
+                shoot = true;
+                shooting();
+                drawImg(Firing, playerXpos, playerYpos, playerSize, playerSize); //changes 'sprite' to one with a fire ball behind it
+
+            }
             if (evt.keyCode == SHOOTKEY) { //shoot
                 shoot = true;
+
                 shooting();
                 drawImg(Firing, playerXpos, playerYpos, playerSize, playerSize); //changes 'sprite' to one with a fire ball behind it
                 SHOOTSOUND.play();
@@ -473,11 +498,16 @@
                 s = false;
 
             }
+            if (evt.keyCode == QKEY) { //down
+                q = false;
+
+            }
             if (evt.keyCode == SHOOTKEY) { //shoot
                 shoot = false;
+                SHOOTSOUND.currentTime = 0;
             }
-        } //end func
 
+        } //end func
 
 
 
@@ -508,31 +538,35 @@
         function Killing() {
             BadShips.forEach(function(ships, i, array) {
 
-                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'easy') {
-                    KillScore = KillScore + 1;
-                    ships.EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
-                    ships.EnemyYpos = 10;
-                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
-                    shootsound.play();
-                } //Enemy 'respawn' after being killed
+                    if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'easy') {
+                        KillScore = KillScore + 1;
+                        ships.EnemyYSpeed = Math.floor(Math.random() * (6 - 3)) + 3;
+                        ships.EnemyYpos = 10;
+                        ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+                        shootsound.play();
+                    } //Enemy 'respawn' after being killed
 
 
 
-                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'medium') {
-                    KillScore = KillScore + 1;
-                    ships.EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
-                    ships.EnemyYpos = 10;
-                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
-                    shootsound.play();
-                } //Enemy 'respawn' after being killed
+                    if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'medium') {
+
+                        KillScore = KillScore + 1;
+                        ships.EnemyYSpeed = Math.floor(Math.random() * (8 - 5)) + 5;
+                        ships.EnemyYpos = 10;
+                        ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+                        shootsound.play();
+                    }
 
 
 
-                if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'hard') {
-                    KillScore = KillScore + 1;
-                    s.EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
-                    ships.EnemyYpos = 10;
-                    ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+                    if (Xpos + LINE_SIZE > ships.EnemyXpos && Xpos < ships.EnemyXpos + ships.EnemySize && Ypos + LINE_SIZE > ships.EnemyYpos && Ypos < ships.EnemyYpos + ships.EnemySize && dificulty == 'hard') {
+                        KillScore = KillScore + 1;
+                        s.EnemyYSpeed = Math.floor(Math.random() * (9 - 6)) + 6;
+                        ships.EnemyYpos = 10;
+                        ships.EnemyXpos = Math.floor(Math.random() * (canvas.width - ships.EnemySize));
+
+
+                    }
 
                 } //Enemy 'respawn' after being killed/ they move back to top with new speed and random X pos
 
@@ -543,8 +577,7 @@
 
 
 
-
-            })
+            )
         };
         // end func
 
