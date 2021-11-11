@@ -41,6 +41,9 @@
     <audio id='BACKUP'>
         <source src="music/rick.mp3">
     </audio>
+    <audio id='Missile'>
+        <source src="music/Missile.mp3">
+    </audio>
     <!-- If you get sick of getting rick rolled switch it to the MUSIC mp3 instead of rick for the more approriate song-->
 
 
@@ -343,7 +346,7 @@
         //SHOOTING FUNC
 
         function shooting() {
-            if (shoot && cooldown) {
+            if (shoot && cooldown) { //normal
                 YSpeed = 25;
                 bulletColor = 'orange';
                 Xpos = playerXpos + (playerSize / 2);
@@ -353,7 +356,7 @@
                 hit = true;
             }
 
-            if (q && Ammo > 0) {
+            if (q && Ammo > 0) { //nuke
                 YSpeed = 10;
                 bulletColor = 'green';
                 Xpos = playerXpos + (playerSize / 2);
@@ -361,6 +364,10 @@
                 Ammo = Ammo - 1;
                 shotType = true;
                 hit = true;
+
+                Missile.currentTime = 0;
+                
+                Missile.play();
             }
 
             if (hit) {
@@ -525,6 +532,7 @@
                     shootsound.play();
                     if (bulletColor == 'green') {
                         NukeHit = true;
+
                     }
                 } //Enemy 'respawn' after being killed
 
@@ -534,19 +542,17 @@
             }); //Enemy 'respawn' after being killed/ they move back to top with new speed and random X pos
 
             if (NukeHit) {
-                        
-                for(var i = 0; i < BadShips.length; i++){
-                    
-                    BadShips[i].EnemyYpos = 0;
-                    
-                    KillScore++;
 
+                for (var i = 0; i < BadShips.length; i++) {
+                    BadShips[i].EnemyYpos = 0;
+                    KillScore++;
                     BadShips[i].EnemyYSpeed = Math.floor(Math.random() * (maxSpeed - minSpeed)) + minSpeed;
-                    BadShips[i].EnemyYpos = 0 - canvas.height/2;
-                    BadShips[i].EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize)); 
+                    BadShips[i].EnemyYpos = 0 - canvas.height / 2;
+                    BadShips[i].EnemyXpos = Math.floor(Math.random() * (canvas.width - EnemySize));
                 }
                 NukeHit = false;
-            }// kills all enemies
+
+            } // kills all enemies
 
 
 
@@ -568,6 +574,8 @@
         const MERICA = document.getElementById("Merica");
         const IHATETOSAYIT = document.getElementById("Ihatetosayit");
         const BACKUP_SONG = document.getElementById("BACKUP");
+        const NUKESOUND = document.getElementById("NUKESOUND");
+
         var one = false;
         var two = false;
         var three = false;
@@ -633,6 +641,7 @@
                     BACKUP_SONG.play(); //BACKUP RICK ROLL
 
                 } //end music
+
 
             } //main if end
 
